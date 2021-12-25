@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.benym.distributed.redis.autoconfigure.RedissonAutoConfiguration\
+  com.benym.distributed.redis.autoconfigure.LimitAutoConfiguration
