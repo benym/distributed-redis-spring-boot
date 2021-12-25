@@ -41,6 +41,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>com.benym.redislock</groupId>
       <artifactId>distributed-redis-annotation</artifactId>
       <version>1.0.0-SNAPSHOT</version>
