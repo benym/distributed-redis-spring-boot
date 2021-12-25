@@ -22,7 +22,6 @@
     <module>distributed-redis-starter</module>
     <module>distributed-redis-annotation</module>
     <module>distributed-redis-tools</module>
-    <module>distributed-redis-starter</module>
   </modules>
 
 
