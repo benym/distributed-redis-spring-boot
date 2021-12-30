@@ -1,6 +1,8 @@
 package com.benym.distributed.redis.autoconfigure;
 
 import javax.annotation.Resource;
+
+import com.benym.distributed.redis.aop.DistributedLockAspect;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -26,6 +28,11 @@ public class RedissonAutoConfiguration {
                 .setAddress(redisUrl)
                 .setPassword(redisProperties.getPassword());
         return Redisson.create(config);
+    }
+
+    @Bean
+    public DistributedLockAspect distributedLockAspect(){
+        return new DistributedLockAspect();
     }
 
 }

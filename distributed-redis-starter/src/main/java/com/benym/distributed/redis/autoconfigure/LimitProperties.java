@@ -1,11 +1,11 @@
 package com.benym.distributed.redis.autoconfigure;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @date 2021/12/23 4:50 下午
  */
-@ConditionalOnProperty(prefix = LimitProperties.PERFIX)
+@ConfigurationProperties(prefix = LimitProperties.PERFIX)
 public class LimitProperties {
 
     public static final String PERFIX = "distributed.limit";
@@ -24,6 +24,11 @@ public class LimitProperties {
      * 是否限流所有接口
      */
     private boolean limitAll = false;
+
+    /**
+     * 自定义切点
+     */
+    private String customPointcut = "";
 
     public long getRate() {
         return rate;
@@ -47,5 +52,13 @@ public class LimitProperties {
 
     public void setLimitAll(boolean limitAll) {
         this.limitAll = limitAll;
+    }
+
+    public String getCustomPointcut() {
+        return customPointcut;
+    }
+
+    public void setCustomPointcut(String customPointcut) {
+        this.customPointcut = customPointcut;
     }
 }
