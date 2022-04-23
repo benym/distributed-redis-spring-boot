@@ -45,7 +45,7 @@ public class DistributedRateLimitAspect {
         // 获取注解处参数
         DistributedRateLimit disRateLimit = method.getAnnotation(DistributedRateLimit.class);
         // 判断是否全局限流
-        if (!limitAll(disRateLimit)) {
+        if (limitAll()) {
             return null;
         }
         String defaultKey = disRateLimit.key();
@@ -59,7 +59,12 @@ public class DistributedRateLimitAspect {
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
         Object result = null;
         try {
+            // trySetRate方法只会执行一次
             rateLimiter.trySetRate(rateType, rate, rateInterval, unit);
+            // 如果redis内已有的速率和配置的速率不一样，则更新速率
+            if (rateLimiter.getConfig().getRate() != rate) {
+                rateLimiter.setRate(rateType, rate, rateInterval, unit);
+            }
             boolean acquired = rateLimiter.tryAcquire(1);
             if (acquired) {
                 result = joinPoint.proceed();
@@ -84,11 +89,10 @@ public class DistributedRateLimitAspect {
     /**
      * 根据注解和配置判断是否限流全部接口
      *
-     * @param limit limit
      * @return boolean
      */
-    private boolean limitAll(DistributedRateLimit limit) {
-        return (limit != null) || limitProperties.isLimitAll();
+    private boolean limitAll() {
+        return limitProperties.isLimitAll();
     }
 
     /**
@@ -100,19 +104,17 @@ public class DistributedRateLimitAspect {
     private String getLimitKey(String defaultKey) {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes();
-        String requestMethod = "";
         if (requestAttributes == null) {
             return defaultKey;
         }
         HttpServletRequest request = requestAttributes.getRequest();
-        requestMethod = request.getMethod();
+        String requestMethod = request.getRequestURI();
         String ip = IPUtils.getIpAddr(request);
         StringBuffer sbf = new StringBuffer();
         sbf.append(defaultKey);
         sbf.append(":");
         sbf.append(ip);
-        sbf.append(":");
-        sbf.append(requestMethod);
+        sbf.append(requestMethod.replaceAll("/", ":"));
         return sbf.toString();
     }
 
