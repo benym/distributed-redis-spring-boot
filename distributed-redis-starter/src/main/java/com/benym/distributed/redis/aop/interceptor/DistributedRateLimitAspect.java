@@ -69,7 +69,7 @@ public class DistributedRateLimitAspect {
             if (acquired) {
                 result = joinPoint.proceed();
             } else {
-                throw new RuntimeException("请求过于频繁");
+                throw new Exception("请求过于频繁");
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -82,7 +82,7 @@ public class DistributedRateLimitAspect {
      *
      * @param e exception
      */
-    public void afterThrowing(Exception e) {
+    public void afterThrowing(Exception e)  {
         logger.error(e.getMessage());
     }
 
