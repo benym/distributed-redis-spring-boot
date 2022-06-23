@@ -59,7 +59,13 @@ public class DistributedLockAspect {
         }
         Object result = null;
         try {
-            boolean lockRes = lock.tryLock(waitTime, leaseTime, timeUnit);
+            boolean lockRes;
+            if (leaseTime != -1) {
+                // lessTime指定之后就不存在看门狗机制
+                lockRes = lock.tryLock(waitTime, leaseTime, timeUnit);
+            } else {
+                lockRes = lock.tryLock(waitTime, timeUnit);
+            }
             if (lockRes) {
                 result = joinPoint.proceed();
             } else {
