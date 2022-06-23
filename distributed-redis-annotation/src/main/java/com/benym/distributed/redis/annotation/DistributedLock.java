@@ -25,7 +25,7 @@ public @interface DistributedLock {
     /**
      * 上锁最长持有时间
      */
-    long leaseTime() default 60;
+    long leaseTime() default -1;
 
     /**
      * 上锁时间单位
